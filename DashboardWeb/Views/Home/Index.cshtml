@@ -1,43 +1,226 @@
-﻿@model IEnumerable<DashboardWeb.Models.Region>
+﻿@model DashboardWeb.Models.DashboardViewModel
 
 @{
-    ViewData["Title"] = "Inicio - Regiones";
+    ViewData["Title"] = "Inicio - Dashboard";
 }
 
+<!-- ESTILOS EXTRA (Dark Mode Fixes) -->
+<style>
+    .card-header {
+        background-color: #1e1e1e !important;
+        border-bottom: 1px solid #333 !important;
+    }
+
+    .m-0.font-weight-bold.text-primary {
+        color: #4e73df !important;
+    }
+
+    /* Estilos para la tabla en modo oscuro */
+    .table-dark-mode {
+        color: #e0e0e0;
+    }
+
+        .table-dark-mode th {
+            border-top: none;
+            border-bottom: 1px solid #333;
+        }
+
+        .table-dark-mode td {
+            border-top: 1px solid #333;
+            vertical-align: middle;
+        }
+
+    .medalla {
+        font-size: 1.5rem;
+    }
+</style>
+
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Reporte por Regiones</h1>
+    <h1 class="h3 mb-0 text-gray-800">Panel de Control General</h1>
 </div>
 
+<!-- FILA 1: Tarjetas de Resumen -->
 <div class="row">
-
-    @foreach (var region in Model)
+    @foreach (var region in Model.Regiones)
     {
         <div class="col-xl-4 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Región
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                @region.Nombre
-                            </div>
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Región</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@region.Nombre</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-globe-americas fa-2x text-gray-300"></i>
+                            @if (region.Nombre == "Norte")
+                            {
+                                <i class="fas fa-sun fa-2x text-warning"></i>
+                            }
+                            else if (region.Nombre == "Sur")
+                            {
+
+                                <i class="fas fa-snowflake fa-2x text-info"></i>
+                            }
+                            else
+                            {
+
+                                <i class="fas fa-building fa-2x text-gray-300"></i>
+                            }
                         </div>
                     </div>
-
-                    <div class="mt-3 text-right">
+                    <div class="mt-3 text-center">
                         <a href="/Home/VerSucursales?idRegion=@region.IdRegion" class="btn btn-sm btn-primary">
-                            Ver Sucursales <i class="fas fa-arrow-right"></i>
+                            Ver Detalles <i class="fas fa-arrow-right fa-sm"></i>
                         </a>
                     </div>
-
                 </div>
             </div>
         </div>
     }
-
 </div>
+
+<!-- FILA 2: Gráficos de Rendimiento -->
+<div class="row">
+    @foreach (var region in Model.Regiones)
+    {
+        <div class="col-xl-4 col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Metas: @region.Nombre</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="chart_region_@region.IdRegion"></canvas>
+                    </div>
+                    <div class="mt-4 text-center small">
+                        <span class="mr-2"><i class="fas fa-circle text-primary"></i> Meta</span>
+                        <span class="mr-2" style="color: #b0b0b0;"><i class="fas fa-circle" style="color: #2c2c2c;"></i> Restante</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- FILA 3: LEADERBOARD (TOP 5 VENDEDORES) 🏆 -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-success">🏆 Top 5 Mejores Vendedores</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-dark-mode" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Vendedor</th>
+                                <th>Sucursal</th>
+                                <th>Ventas Totales</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int puesto = 1;
+                            }
+                            @foreach (var vendedor in Model.TopVendedores)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (puesto == 1)
+                                        {
+                                            <span class="medalla">🥇</span>
+                                        }
+                                        else if (puesto == 2)
+                                        {
+
+                                            <span class="medalla">🥈</span>
+                                        }
+                                        else if (puesto == 3)
+                                        {
+
+                                            <span class="medalla">🥉</span>
+                                        }
+                                        else
+                                        {
+
+                                            <span class="font-weight-bold">@puesto</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <!-- Avatar aleatorio para darle estilo -->
+                                        <img class="img-profile rounded-circle mr-2" style="width: 30px;"
+                                             src="~/img/undraw_profile_@(puesto % 3 + 1).svg">
+                                        <span class="font-weight-bold">@vendedor.Nombre</span>
+                                    </td>
+                                    <td>@vendedor.Sucursal</td>
+                                    <td class="text-success font-weight-bold">$@vendedor.VentasActuales.ToString("N0")</td>
+                                    <td>
+                                        @if (puesto == 1)
+                                        {
+                                            <span class="badge badge-success">Estrella del Mes</span>
+                                        }
+                                        else
+                                        {
+
+                                            <span class="badge badge-primary">Top Performer</span>
+                                        }
+                                    </td>
+                                </tr>
+                                puesto++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts para Gráficos -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var regionesIds = [];
+
+        // OJO: Ahora iteramos sobre Model.Regiones, no solo Model
+        @foreach (var region in Model.Regiones)
+        {
+                <text>regionesIds.push(@region.IdRegion);</text>
+        }
+
+        regionesIds.forEach(function(id) {
+            var ctx = document.getElementById("chart_region_" + id);
+            if (ctx) {
+                var porcentaje = Math.floor(Math.random() * 60) + 30;
+                var restante = 100 - porcentaje;
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["Meta Cumplida", "Faltante"],
+                        datasets: [{
+                            data: [porcentaje, restante],
+                            backgroundColor: ['#36b9cc', '#2c2c2c'],
+                            hoverBackgroundColor: ['#2c9faf', '#3a3a3a'],
+                            hoverBorderColor: "transparent",
+                        }],
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        tooltips: {
+                            backgroundColor: "#1e1e1e",
+                            bodyFontColor: "#ffffff",
+                            borderColor: '#333',
+                            borderWidth: 1,
+                            displayColors: true
+                        },
+                        legend: { display: false },
+                        cutoutPercentage: 75,
+                    },
+                });
+            }
+        });
+    });
+</script>

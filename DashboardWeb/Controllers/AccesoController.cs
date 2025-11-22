@@ -33,7 +33,7 @@ namespace DashboardWeb.Controllers
         {
             try
             {
-                // A. Encriptar la contraseña a Base64 (Requisito del profe)
+                // A. Encriptar la contraseña a Base64
                 string passBase64 = "";
                 if (!string.IsNullOrEmpty(password))
                 {
@@ -47,14 +47,13 @@ namespace DashboardWeb.Controllers
                 using (var conexion = _contexto.ObtenerConexion())
                 {
                     string sql = "SELECT * FROM Usuarios WHERE NombreUsuario = @n AND PasswordBase64 = @p";
-                    // Aquí Dapper hace la magia segura
                     usuarioEncontrado = await conexion.QueryFirstOrDefaultAsync<Usuario>(sql, new { n = usuario, p = passBase64 });
                 }
 
                 // C. Verificar resultado
                 if (usuarioEncontrado != null)
                 {
-                    // Crear la "Identidad" (La credencial del usuario)
+                    // 1. Crear la "Identidad" (La credencial del usuario)
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, usuarioEncontrado.NombreUsuario),
@@ -63,19 +62,24 @@ namespace DashboardWeb.Controllers
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    // Guardar la cookie de sesión y entrar
+                    // 2. Guardar la cookie de sesión y entrar
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                    // 3. ✅ Mensaje de Éxito (Texto limpio para evitar errores visuales)
+                    TempData["MensajeExito"] = "Bienvenido al sistema, " + usuarioEncontrado.NombreUsuario;
 
                     return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    ViewBag.Error = "Usuario o contraseña incorrectos";
+                    // ❌ Mensaje de Error (Texto limpio sin ñ ni tildes)
+                    TempData["MensajeError"] = "Usuario o clave incorrectos. Intenta de nuevo.";
                     return View();
                 }
             }
             catch (System.Exception ex)
             {
+                // Error técnico inesperado
                 ViewBag.Error = ex.Message;
                 return View();
             }

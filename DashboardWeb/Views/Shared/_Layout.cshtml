@@ -15,6 +15,38 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     <link href="~/css/sb-admin-2.min.css" rel="stylesheet">
+    <style>
+       
+        body, #wrapper, #content-wrapper, #content {
+            background-color: #121212 !important;
+            color: #e0e0e0;
+        }
+        
+        .card {
+            background-color: #1e1e1e !important;
+            border: 1px solid #333 !important;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+            /* Efecto Hover 3D */
+            .card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1) !important;
+                cursor: pointer;
+            }
+        
+        .text-gray-800, h1, h2, h3, h4, h5, .h5, .h3 {
+            color: #ffffff !important;
+        }
+
+        .text-gray-600, .text-gray-500 {
+            color: #b0b0b0 !important;
+        }
+        
+        .topbar, .bg-white {
+            background-color: #1e1e1e !important;
+            border-bottom: 1px solid #333 !important;
+        }
+    </style>
 
 </head>
 
@@ -108,6 +140,37 @@
     <script src="~/js/sb-admin-2.min.js"></script>
 
     <script src="~/vendor/chart.js/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            // 1. Capturar mensajes de Éxito (Success)
+            var mensajeExito = '@TempData["MensajeExito"]';
+            if (mensajeExito) {
+                Swal.fire({
+                    title: '¡Excelente!',
+                    text: mensajeExito,
+                    icon: 'success',
+                    background: '#1e1e1e', // Fondo oscuro para tu tema
+                    color: '#fff',         // Letra blanca
+                    confirmButtonColor: '#4e73df'
+                });
+            }
+
+            // 2. Capturar mensajes de Error
+            var mensajeError = '@TempData["MensajeError"]';
+            if (mensajeError) {
+                Swal.fire({
+                    title: 'Error',
+                    text: mensajeError,
+                    icon: 'error',
+                    background: '#1e1e1e',
+                    color: '#fff',
+                    confirmButtonColor: '#e74a3b'
+                });
+            }
+        });
+    </script>
 
 </body>
 

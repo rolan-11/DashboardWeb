@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = null; // Esto quita el menú lateral para esta página
+    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -9,18 +9,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login - Mi Sistema</title>
 
+    <!-- Estilos -->
     <link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <link href="~/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <!-- MODO OSCURO (Opcional, para que combine con tu dashboard) -->
+    <style>
+        body.bg-gradient-primary {
+            background-color: #121212 !important;
+            background-image: none !important;
+        }
+
+        .card {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+        }
+
+        .text-gray-900 {
+            color: #fff !important;
+        }
+
+        .form-control-user {
+            background-color: #2d2d2d;
+            border: 1px solid #444;
+            color: #fff;
+        }
+
+            .form-control-user:focus {
+                background-color: #333;
+                color: #fff;
+            }
+    </style>
 </head>
 
 <body class="bg-gradient-primary">
 
     <div class="container">
+        <!-- Fila Exterior -->
         <div class="row justify-content-center">
             <div class="col-xl-5 col-lg-6 col-md-9">
                 <div class="card o-hidden border-0 shadow-lg my-5">
                     <div class="card-body p-0">
+                        <!-- Fila Anidada -->
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="p-5">
@@ -28,26 +59,18 @@
                                         <h1 class="h4 text-gray-900 mb-4">¡Bienvenido!</h1>
                                     </div>
 
+                                    <!-- FORMULARIO -->
                                     <form class="user" action="/Acceso/Login" method="post">
-
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user"
                                                    name="usuario"
                                                    placeholder="Ingresa tu usuario..." required autofocus>
                                         </div>
-
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user"
                                                    name="password"
                                                    placeholder="Contraseña" required>
                                         </div>
-
-                                        @if (ViewBag.Error != null)
-                                        {
-                                            <div class="alert alert-danger text-center" role="alert">
-                                                @ViewBag.Error
-                                            </div>
-                                        }
 
                                         <button type="submit" class="btn btn-primary btn-user btn-block">
                                             Ingresar
@@ -67,10 +90,33 @@
         </div>
     </div>
 
+    <!-- Scripts Base -->
     <script src="~/vendor/jquery/jquery.min.js"></script>
     <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
     <script src="~/js/sb-admin-2.min.js"></script>
+
+    <!-- AGREGA ESTO: Librería SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- AGREGA ESTO: Lógica para mostrar la alerta si falló el login -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var mensajeError = '@TempData["MensajeError"]';
+
+            if (mensajeError) {
+                Swal.fire({
+                    title: '¡Error!',
+                    text: mensajeError,
+                    icon: 'error',
+                    confirmButtonText: 'Intentar de nuevo',
+                    confirmButtonColor: '#e74a3b', // Rojo
+                    background: '#1e1e1e', // Fondo oscuro
+                    color: '#fff'
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>
