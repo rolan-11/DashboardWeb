@@ -1,0 +1,78 @@
+﻿@model IEnumerable<DashboardWeb.Models.Vendedor>
+
+@{
+    ViewData["Title"] = "Vendedores";
+}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Rendimiento de Vendedores</h1>
+    <a href="javascript:history.back()" class="btn btn-sm btn-secondary shadow-sm">
+        <i class="fas fa-arrow-left fa-sm text-white-50"></i> Volver a Sucursales
+    </a>
+</div>
+
+<div class="card mb-4 py-3 border-bottom-primary">
+    <div class="card-body">
+        <h6 class="font-weight-bold text-primary">Referencia de Semáforos:</h6>
+        <span class="badge badge-success p-2 mr-2">Verde: Superó la Meta</span>
+        <span class="badge badge-warning p-2 mr-2">Amarillo: Cerca (>80%)</span>
+        <span class="badge badge-danger p-2">Rojo: Bajo Rendimiento</span>
+    </div>
+</div>
+
+<div class="row">
+    @foreach (var v in Model)
+    {
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-@v.ColorSemaforo shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-@v.ColorSemaforo text-uppercase mb-1">
+                                @v.Nombre
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                Vendió: $@v.VentasActuales
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">
+                                Meta: $@v.MetaVentas
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            @if (v.ColorSemaforo == "success")
+                            {
+                                <i class="fas fa-check-circle fa-2x text-success"></i>
+                            }
+                            else if (v.ColorSemaforo == "warning")
+                            {
+
+                                <i class="fas fa-exclamation-triangle fa-2x text-warning"></i>
+                            }
+                            else
+                            {
+
+                                <i class="fas fa-times-circle fa-2x text-danger"></i>
+                            }
+                        </div>
+                    </div>
+
+                    @{
+                        // CORRECCIÓN: Convertimos a (int) para quitar decimales y comas
+                        int porcentaje = 0;
+                        if (v.MetaVentas > 0) // Evitamos división por cero
+                        {
+                            porcentaje = (int)((v.VentasActuales / v.MetaVentas) * 100);
+                        }
+
+                        // Si se pasó del 100%, lo dejamos en 100 para que no se salga del dibujo
+                        if (porcentaje > 100) porcentaje = 100;
+                    }
+                    <div class="progress progress-sm mt-3">
+                        <div class="progress-bar bg-@v.ColorSemaforo" role="progressbar"
+                             style="width: @porcentaje%" aria-valuenow="@porcentaje" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
