@@ -13,7 +13,6 @@ namespace DashboardWeb.Datos
             _cadenaConexion = configuracion.GetConnectionString("CadenaSQL");
         }
 
-        // Este método devuelve la conexión lista para usar
         public IDbConnection ObtenerConexion()
         {
             return new SqlConnection(_cadenaConexion);

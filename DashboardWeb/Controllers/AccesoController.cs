@@ -18,11 +18,11 @@ namespace DashboardWeb.Controllers
             _contexto = contexto;
         }
 
-        // 1. GET: Muestra la pantalla de Login
+        //pantalla de Login
         [HttpGet]
         public IActionResult Login()
         {
-            // Si ya estás logueado, te manda directo al inicio
+            // Si ya estás logueadote manda directo al inicio
             if (User.Identity!.IsAuthenticated) return RedirectToAction("Index", "Home");
             return View();
         }
@@ -33,7 +33,7 @@ namespace DashboardWeb.Controllers
         {
             try
             {
-                // A. Encriptar la contraseña a Base64
+                //contraseña a Base64
                 string passBase64 = "";
                 if (!string.IsNullOrEmpty(password))
                 {
@@ -41,7 +41,7 @@ namespace DashboardWeb.Controllers
                     passBase64 = System.Convert.ToBase64String(bytes);
                 }
 
-                // B. Preguntar a la Base de Datos si existe usando Dapper
+                //Preguntar a la Base de Datos si existe usando Dapper
                 Usuario? usuarioEncontrado = null;
 
                 using (var conexion = _contexto.ObtenerConexion())
@@ -65,14 +65,14 @@ namespace DashboardWeb.Controllers
                     // 2. Guardar la cookie de sesión y entrar
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-                    // 3. ✅ Mensaje de Éxito (Texto limpio para evitar errores visuales)
+                    // 3. ✅ Mensaje de Éxito
                     TempData["MensajeExito"] = "Bienvenido al sistema, " + usuarioEncontrado.NombreUsuario;
 
                     return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    // ❌ Mensaje de Error (Texto limpio sin ñ ni tildes)
+                    // ❌ Mensaje de Error 
                     TempData["MensajeError"] = "Usuario o clave incorrectos. Intenta de nuevo.";
                     return View();
                 }

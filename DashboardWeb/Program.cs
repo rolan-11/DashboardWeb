@@ -3,10 +3,8 @@ using Microsoft.AspNetCore.Authentication.Cookies; // <--- Necesario para el log
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// 1. Conectar a Base de Datos (Esto ya lo tenías)
 builder.Services.AddScoped<ApplicationDbContext>();
 
 // 2. CONFIGURAR LA SEGURIDAD (COOKIES)
@@ -19,7 +17,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configuracion de HTTP 
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
