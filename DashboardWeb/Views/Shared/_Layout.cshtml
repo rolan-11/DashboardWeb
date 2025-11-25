@@ -144,14 +144,14 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
-            // 1. Capturar mensajes de Éxito (Success)
+            // 1. Capturar mensajes de Éxito 
             var mensajeExito = '@TempData["MensajeExito"]';
             if (mensajeExito) {
                 Swal.fire({
                     title: '¡Excelente!',
                     text: mensajeExito,
                     icon: 'success',
-                    background: '#1e1e1e', // Fondo oscuro para tu tema
+                    background: '#1e1e1e', // Fondo oscuro 
                     color: '#fff',         // Letra blanca
                     confirmButtonColor: '#4e73df'
                 });

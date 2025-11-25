@@ -26,7 +26,7 @@ namespace DashboardWeb.Controllers
                 string sqlRegiones = "SELECT * FROM Regiones";
                 var regiones = await conexion.QueryAsync<Region>(sqlRegiones);
 
-                // 2. Traer el TOP 5 MEJORES VENDEDORES (Consulta SQL con JOIN)
+                // 2. Traer el TOP 5 MEJORES VENDEDORES 
                 string sqlTop = @"
                     SELECT TOP 5 
                         v.Nombre, 
