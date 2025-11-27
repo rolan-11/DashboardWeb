@@ -8,7 +8,7 @@
         public decimal VentasActuales { get; set; }
         public decimal MetaVentas { get; set; }
 
-        // Lógica del semáforo (Calculada automáticamente)
+        // semáforo
         public string ColorSemaforo
         {
             get

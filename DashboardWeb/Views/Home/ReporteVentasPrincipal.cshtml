@@ -1,0 +1,57 @@
+﻿@model IEnumerable<DashboardWeb.Models.ReporteVentasPorMes>
+
+@{
+    ViewData["Title"] = "Reporte de Ventas";
+}
+
+<div class="container-fluid">
+    <!-- Título -->
+    <h1 class="h3 mb-2 text-gray-800">Reporte Mensual de Ingresos</h1>
+    <p class="mb-4">Aquí puedes ver el desglose de ventas por mes y acceder al detalle de cada ticket.</p>
+
+    <!-- Tabla de Datos -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Resumen del Año Actual</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Mes</th>
+                            <th>Total Transacciones</th>
+                            <th>Dinero Recaudado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.MesNombre</td>
+                                <td>@item.TotalTransacciones</td>
+                                <td>$ @item.TotalRecaudado.ToString("N2")</td>
+                                <td>
+                                    <!-- Botón Drill Down: Lleva al detalle -->
+                                    <a asp-action="DetalleVentasMes" asp-route-mes="@item.MesNumero" class="btn btn-info btn-icon-split btn-sm">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                        <span class="text">Ver Tickets</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-3">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver al Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

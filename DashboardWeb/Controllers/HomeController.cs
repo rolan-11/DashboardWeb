@@ -17,12 +17,13 @@ namespace DashboardWeb.Controllers
             _contexto = contexto;
         }
 
+        
         // PANTALLA PRINCIPAL
         public async Task<IActionResult> Index()
         {
             using (var conexion = _contexto.ObtenerConexion())
             {
-                // 1. Traer las Regiones (como antes)
+                // 1. Traer las Regiones
                 string sqlRegiones = "SELECT * FROM Regiones";
                 var regiones = await conexion.QueryAsync<Region>(sqlRegiones);
 
@@ -49,7 +50,7 @@ namespace DashboardWeb.Controllers
             }
         }
 
-        // Pantallas Secundarias (Drill Down)
+        // Pantallas Secundarias (Drill Down Geográfico)
         public async Task<IActionResult> VerSucursales(int idRegion)
         {
             using (var conexion = _contexto.ObtenerConexion())
@@ -73,6 +74,79 @@ namespace DashboardWeb.Controllers
         public async Task<IActionResult> Salir()
         {
             return RedirectToAction("Salir", "Acceso");
+        }
+
+
+       
+
+        // REPORTE DE VENTAS 
+
+        // NIVEL 1: Resumen de Meses
+        public async Task<IActionResult> ReporteVentasPrincipal()
+        {
+            using (var conexion = _contexto.ObtenerConexion())
+            {
+                // Agrupa ventas por Mes y suma totales
+                string sql = @"
+                    SELECT 
+                        MONTH(Fecha) as MesNumero,
+                        DATENAME(MONTH, Fecha) as MesNombre,
+                        COUNT(*) as TotalTransacciones,
+                        SUM(Total) as TotalRecaudado
+                    FROM Ventas
+                    WHERE YEAR(Fecha) = YEAR(GETDATE())
+                    GROUP BY MONTH(Fecha), DATENAME(MONTH, Fecha)
+                    ORDER BY MesNumero DESC";
+
+                var reporte = await conexion.QueryAsync<ReporteVentasPorMes>(sql);
+                return View(reporte);
+            }
+        }
+
+        // NIVEL 2: Detalle de Tickets por Mes
+        public async Task<IActionResult> DetalleVentasMes(int mes)
+        {
+            using (var conexion = _contexto.ObtenerConexion())
+            {
+                string sql = "SELECT * FROM Ventas WHERE MONTH(Fecha) = @m AND YEAR(Fecha) = YEAR(GETDATE())";
+                var lista = await conexion.QueryAsync<Venta>(sql, new { m = mes });
+
+                ViewBag.Mes = mes;
+                return View(lista);
+            }
+        }
+
+        //REPORTE DE PRODUCTOS (POR CATEGORÍA) ---
+
+        // NIVEL 1: Resumen de Categorías
+        public async Task<IActionResult> ReporteProductosPrincipal()
+        {
+            using (var conexion = _contexto.ObtenerConexion())
+            {
+                // Cuenta cuántos productos hay por categoría
+                string sql = @"
+                    SELECT 
+                        c.IdCategoria as CategoriaId,
+                        c.Nombre as CategoriaNombre,
+                        COUNT(p.IdProducto) as CantidadDeProductos
+                    FROM Categorias c
+                    LEFT JOIN Productos p ON c.IdCategoria = p.IdCategoria
+                    GROUP BY c.IdCategoria, c.Nombre";
+
+                var reporte = await conexion.QueryAsync<ReporteCategoriaConteo>(sql);
+                return View(reporte);
+            }
+        }
+
+        // Lista de Productos en esa Categoría
+        public async Task<IActionResult> DetalleProductosCategoria(int idCat)
+        {
+            using (var conexion = _contexto.ObtenerConexion())
+            {
+                string sql = "SELECT * FROM Productos WHERE IdCategoria = @id";
+                var lista = await conexion.QueryAsync<Producto>(sql, new { id = idCat });
+                return View(lista);
+            }
         }
     }
 }

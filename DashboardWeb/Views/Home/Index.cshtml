@@ -39,7 +39,55 @@
     <h1 class="h3 mb-0 text-gray-800">Panel de Control General</h1>
 </div>
 
-<!-- FILA 1: Tarjetas de Resumen -->
+
+<div class="row mb-4">
+
+    <!-- Tarjeta para ir a VENTAS -->
+    <div class="col-xl-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Módulo de Ingresos
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">Reporte de Ventas</div>
+                        <p class="text-xs mt-2">Analiza la recaudación por mes y tickets.</p>
+                    </div>
+                    <div class="col-auto">
+                        <a asp-action="ReporteVentasPrincipal" class="btn btn-primary btn-circle btn-lg">
+                            <i class="fas fa-chart-line"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjeta para ir a INVENTARIO -->
+    <div class="col-xl-6 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Catálogo de Productos
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">Inventario por Categoría</div>
+                        <p class="text-xs mt-2">Gestiona el stock y productos disponibles.</p>
+                    </div>
+                    <div class="col-auto">
+                        <a asp-action="ReporteProductosPrincipal" class="btn btn-success btn-circle btn-lg">
+                            <i class="fas fa-boxes"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FILA 1: Tarjetas de Resumen (REGIONES) -->
 <div class="row">
     @foreach (var region in Model.Regiones)
     {
@@ -188,7 +236,7 @@
         // OJO: Ahora iteramos sobre Model.Regiones, no solo Model
         @foreach (var region in Model.Regiones)
         {
-                <text>regionesIds.push(@region.IdRegion);</text>
+                    <text>regionesIds.push(@region.IdRegion);</text>
         }
 
         regionesIds.forEach(function(id) {
